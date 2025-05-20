@@ -120,11 +120,11 @@ def apply_filter(driver, search_type, value_type, min_value, max_value, type_of_
         #     house_type_checkbox = house_type_div.find_element(By.ID, f"checkbox-{type}")
         #     house_type_checkbox.click()
         #
-        # # Number of bedrooms
+        # Number of bedrooms
         # bedrooms_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='bedrooms']")
         # min_bedrooms_input =  bedrooms_div.find_element(By.CSS_SELECTOR, f"label[for='bedrooms-{min_number_of_bedrooms}']")
         # min_bedrooms_input.click()
-        #
+
         # # Min car spots
         # parking_spacess_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='parkingSpaces']")
         # min_parking_spaces_input = parking_spacess_div.find_element(By.CSS_SELECTOR, f"label[for='parkingspaces-{min_number_of_parking_spaces}']")
@@ -135,22 +135,22 @@ def apply_filter(driver, search_type, value_type, min_value, max_value, type_of_
         # min_bethrooms_input = bathrooms_div.find_element(By.CSS_SELECTOR,f"label[for='bathrooms-{min_number_of_bathrooms}']")
         # min_bethrooms_input.click()
         #
-        # # Min and max area
-        # area_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='area']")
-        # max_value_input = area_div.find_element(By.ID, "area-input-max")
-        # max_value_input.send_keys(Keys.CONTROL + 'a')
-        # max_value_input.send_keys(Keys.BACKSPACE)
-        # max_value_input.send_keys(str(max_area))
+        # Min and max area
+        area_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='area']")
+        max_value_input = area_div.find_element(By.ID, "area-input-max")
+        max_value_input.send_keys(Keys.CONTROL + 'a')
+        max_value_input.send_keys(Keys.BACKSPACE)
+        max_value_input.send_keys(str(max_area))
+
+        min_value_input = area_div.find_element(By.ID, "area-input-min")
+        min_value_input.send_keys(Keys.CONTROL + 'a')
+        min_value_input.send_keys(Keys.BACKSPACE)
+        min_value_input.send_keys(str(min_area))
         #
-        # min_value_input = area_div.find_element(By.ID, "area-input-min")
-        # min_value_input.send_keys(Keys.CONTROL + 'a')
-        # min_value_input.send_keys(Keys.BACKSPACE)
-        # min_value_input.send_keys(str(min_area))
-        #
-        # # Is it furnished ?
-        # furnished_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='furnished']")
-        # is_furnished_input = furnished_div.find_element(By.CSS_SELECTOR, f"label[for='furnished-{furnished}']")
-        # is_furnished_input.click()
+        # Is it furnished ?
+        furnished_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='furnished']")
+        is_furnished_input = furnished_div.find_element(By.CSS_SELECTOR, f"label[for='furnished-{furnished}']")
+        is_furnished_input.click()
         #
         # # Do you accept pets ?
         # accepts_pets_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='acceptsPets']")
@@ -162,12 +162,12 @@ def apply_filter(driver, search_type, value_type, min_value, max_value, type_of_
         # near_subway_input = near_subway_div.find_element(By.CSS_SELECTOR, f"label[for='nearsubway-{near_subway}']")
         # near_subway_input.click()
         #
-        # # Availability
+        # Availability
         # availability_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='availability']")
         # availability_input = availability_div.find_element(By.CSS_SELECTOR, f"label[for='availability-{availability}']")
         # availability_input.click()
         #
-        # # Min number of suites
+        # Min number of suites
         # suites_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='suites']")
         # min_number_of_suites_input = suites_div.find_element(By.CSS_SELECTOR, f"label[for='suites-{min_number_of_suites}']")
         # min_number_of_suites_input.click()
@@ -218,7 +218,7 @@ def apply_filter(driver, search_type, value_type, min_value, max_value, type_of_
         # Submit button
         filter_button = driver.find_element(By.CSS_SELECTOR, "button[data-testid='apply-filters-btn']")
         filter_button.click()
-        driver.implicitly_wait(1000)
+        driver.implicitly_wait(2000)
     else:
         pass
 
@@ -264,6 +264,26 @@ def local_search(driver, city, neighborhood = None , amount = None, number_of_ro
 
     driver.implicitly_wait(2000)
 
+def load_all_results(driver, result_status):
+    if (result_status != "No results"):
+        while True:
+            try:
+                # Wait until the "see more" button is present and clickable
+                see_more_button = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.ID, "see-more")))
+                see_more_button.click()
+                print("Clicked 'see more' button.")
+
+                # Wait a bit for content to load
+                time.sleep(2)
+            except TimeoutException or NoSuchElementException:
+                # If the button is not found within the timeout, break the loop
+                # or
+                # If the button is not found, break the loop
+                print("'See more' button not found. Stopping clicks.")
+                break
+    else:
+        print(f"No results found")
+
 def main():
 
     chrome_options = webdriver.ChromeOptions()
@@ -279,7 +299,7 @@ def main():
 
     local_search(driver, "São Paulo", "Alto de Pinheiros")
 
-    apply_filter(driver, SEARCH_TYPE[0], VALUE_TYPE[1], '1000', '2000', TYPE_OF_HOUSING,
+    apply_filter(driver, SEARCH_TYPE[0], VALUE_TYPE[1], '1000', '3000', TYPE_OF_HOUSING,
                  MIN_NUMBER_OF_BEDROOMS[2], MIN_NUMBER_OF_PARKING_SPACES[1], MIN_NUMBER_OF_BATHROOMS[3],
                  70, 120, FURNISHED[1], PETS[1], NEAR_SUBWAY[0], AVAILABILITY[1],MIN_NUMBER_OF_SUITES[-1],
                  CONDOMINIUM_OPTIONS, CONVENIENCE_OPTIONS, FURNITURE_OPTIONS,
@@ -290,21 +310,9 @@ def main():
     print(number_result)
 
     # Get information about results
-    # if(results != "No results"):
-    #     # Press button "More results" until no more results to see
-    #     see_more_button = driver.find_element(By.ID, "see-more")
-    #     while True:
-    #         try:
-    #             see_more_button.click()
-    #             print("🔘 Button clicked.")
-    #             time.sleep(1.5)  # optional: wait for content to load
-    #         except (NoSuchElementException, StaleElementReferenceException):
-    #             # Button no longer exists
-    #             print("✅ No more buttons found. Exiting loop.")
-    #             break
-    # else:
-    #     print(f"No results find")
+    load_all_results(driver, result_status)
 
+    time.sleep(20)
     driver.implicitly_wait(2000)
 
     # Quit
