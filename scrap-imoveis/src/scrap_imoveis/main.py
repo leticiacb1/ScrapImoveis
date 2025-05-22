@@ -26,7 +26,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException
+
 
 # Challenge 1
 # Dropdown with cities appears after click so is very difficult do a Inspect in the element to can interact using code
@@ -269,9 +270,16 @@ def load_all_results(driver, result_status):
         while True:
             try:
                 # Wait until the "see more" button is present and clickable
-                see_more_button = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.ID, "see-more")))
-                see_more_button.click()
-                print("Clicked 'see more' button.")
+
+                # driver.execute_script("window.scrollBy(0, 100)", "")
+                # driver.implicitly_wait(2000)
+                try:
+                    see_more_button = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.ID, "see-more")))
+                    see_more_button.click()
+                    print("Clicked 'see more' button.")
+                except StaleElementReferenceException as e:
+                    print(e)
+                    pass
 
                 # Wait a bit for content to load
                 time.sleep(2)
@@ -305,6 +313,8 @@ def main():
                  CONDOMINIUM_OPTIONS, CONVENIENCE_OPTIONS, FURNITURE_OPTIONS,
                  WEEL_BEING_OPTIONS, HOME_APPLIANCES_OPTIONS, ROOMS_OPTIONS,
                  ACCESSIBILITY_OPTIONS)
+
+    driver.implicitly_wait(2000)
 
     number_result , result_status = check_results(driver)
     print(number_result)
