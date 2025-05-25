@@ -164,14 +164,14 @@ def apply_filter(driver, search_type, value_type, min_value, max_value, type_of_
         # near_subway_input.click()
         #
         # Availability
-        # availability_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='availability']")
-        # availability_input = availability_div.find_element(By.CSS_SELECTOR, f"label[for='availability-{availability}']")
-        # availability_input.click()
+        availability_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='availability']")
+        availability_input = availability_div.find_element(By.CSS_SELECTOR, f"label[for='availability-{availability}']")
+        availability_input.click()
         #
         # Min number of suites
-        # suites_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='suites']")
-        # min_number_of_suites_input = suites_div.find_element(By.CSS_SELECTOR, f"label[for='suites-{min_number_of_suites}']")
-        # min_number_of_suites_input.click()
+        suites_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='suites']")
+        min_number_of_suites_input = suites_div.find_element(By.CSS_SELECTOR, f"label[for='suites-{min_number_of_suites}']")
+        min_number_of_suites_input.click()
         #
         # # Condominium
         # installations_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='installations']")
@@ -210,7 +210,7 @@ def apply_filter(driver, search_type, value_type, min_value, max_value, type_of_
         #     rooms_checkbox = rooms_div.find_element(By.ID, f"checkbox-{option}")
         #     rooms_checkbox.click()
         #
-        # # Accessibility
+        # Accessibility
         # accessibility_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='accessibility']")
         # for option in accessibility_options:
         #     accessibility_checkbox = accessibility_div.find_element(By.ID, f"checkbox-{option}")
@@ -227,13 +227,13 @@ def check_results(driver):
     # Check for the 'no results' message
     driver.implicitly_wait(1)
     no_results = driver.find_elements(By.XPATH,
-                                      "//h4[contains(text(), 'Não encontramos imóveis com as suas preferências')]")
+                                      "//h4[contains(text(), 'Nenhum imóvel encontrado')]")
     if no_results:
         print("📭 No results found.")
         return 0, "No results"
     else:
         try:
-            number_of_results_div = WebDriverWait(driver, 20).until(
+            number_of_results_div = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "div[data-testid='CONTEXTUAL_SEARCH_TITLE']"))
             )
             number_of_results_span = number_of_results_div.find_element(By.TAG_NAME, "span")
@@ -270,11 +270,8 @@ def load_all_results(driver, result_status):
         while True:
             try:
                 # Wait until the "see more" button is present and clickable
-
-                # driver.execute_script("window.scrollBy(0, 100)", "")
-                # driver.implicitly_wait(2000)
                 try:
-                    see_more_button = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.ID, "see-more")))
+                    see_more_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "see-more")))
                     see_more_button.click()
                     print("Clicked 'see more' button.")
                 except StaleElementReferenceException as e:
@@ -288,9 +285,51 @@ def load_all_results(driver, result_status):
                 # or
                 # If the button is not found, break the loop
                 print("'See more' button not found. Stopping clicks.")
-                break
+                return
     else:
         print(f"No results found")
+
+def extract_data(driver, all_information):
+
+    print("Begin Extraction ...")
+
+    house_gris_rows = driver.find_elements(By.CSS_SELECTOR, "div[data-testid='HOUSE_GRID_ROW_CARD_TEST_ID']")
+
+    for row in house_gris_rows:
+        house_cards = row.find_elements(By.CSS_SELECTOR, "div[data-testid='house-card-container-rent']")
+
+        for card in house_cards:
+            a = card.find_element(By.TAG_NAME, 'a')
+            print(a.get_attribute("href"))
+
+            prices = a.find_elements(By.TAG_NAME, 'p')
+            total_price, rental_price =  prices
+
+            print(total_price.text, rental_price.text)
+
+            features = a.find_element(By.TAG_NAME, 'h3')
+            print(features.text)
+
+            region = a.find_element(By.TAG_NAME, 'h2')
+            print(region.text)
+
+            if(all_information):
+                a.click()
+
+                # New tab
+                driver.implicitly_wait(2000)
+                driver.switch_to.window(driver.window_handles[1])
+                driver.implicitly_wait(5000)
+
+                more_info_div = driver.find_element(By.CSS_SELECTOR, "div[data-testid='house-main-info']")
+                infos = more_info_div.find_elements(By.TAG_NAME, 'p')
+                for info in infos:
+                    print(info.text)
+
+                # Switch back to the original (first) tab
+                driver.implicitly_wait(2000)
+                driver.close()
+                driver.switch_to.window(driver.window_handles[0])
 
 def main():
 
@@ -307,9 +346,9 @@ def main():
 
     local_search(driver, "São Paulo", "Alto de Pinheiros")
 
-    apply_filter(driver, SEARCH_TYPE[0], VALUE_TYPE[1], '1000', '3000', TYPE_OF_HOUSING,
+    apply_filter(driver, SEARCH_TYPE[0], VALUE_TYPE[0], '1000', '2000', TYPE_OF_HOUSING,
                  MIN_NUMBER_OF_BEDROOMS[2], MIN_NUMBER_OF_PARKING_SPACES[1], MIN_NUMBER_OF_BATHROOMS[3],
-                 70, 120, FURNISHED[1], PETS[1], NEAR_SUBWAY[0], AVAILABILITY[1],MIN_NUMBER_OF_SUITES[-1],
+                 70, 120, FURNISHED[1], PETS[1], NEAR_SUBWAY[0], AVAILABILITY[1],MIN_NUMBER_OF_SUITES[1],
                  CONDOMINIUM_OPTIONS, CONVENIENCE_OPTIONS, FURNITURE_OPTIONS,
                  WEEL_BEING_OPTIONS, HOME_APPLIANCES_OPTIONS, ROOMS_OPTIONS,
                  ACCESSIBILITY_OPTIONS)
@@ -317,13 +356,15 @@ def main():
     driver.implicitly_wait(2000)
 
     number_result , result_status = check_results(driver)
-    print(number_result)
 
     # Get information about results
     load_all_results(driver, result_status)
+    driver.implicitly_wait(1000)
+
+    all_information = True
+    extract_data(driver, all_information)
 
     time.sleep(20)
-    driver.implicitly_wait(2000)
 
     # Quit
     driver.quit()
