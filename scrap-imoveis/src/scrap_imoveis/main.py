@@ -29,9 +29,7 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException,
 import pandas as pd
 import os
 
-URL = f"https://www.quintoandar.com.br/alugar/"
-
-# Challenge Found
+# Some challenges found
 # Dropdown with cities appears after click so is very difficult do a Inspect in the element to can interact using code, so because of it, we prefer to stick with the filter solution when entering the search section.
 
 # Non-in-depth Work-Around:
@@ -40,6 +38,9 @@ URL = f"https://www.quintoandar.com.br/alugar/"
 # > document.addEventListener('click', e => e.stopImmediatePropagation(), true);          -- Stop "close" to analisis element on inspector
 # >  or  debugger;
 
+
+# Setup of constant values needed, ref: www.quintoandar.com.br
+URL = f"https://www.quintoandar.com.br/alugar/"
 
 SEARCH_TYPE = ['Alugar', 'Comprar']
 VALUE_TYPE = ['Valor total', 'Aluguel']
@@ -487,31 +488,31 @@ def ask_questions():
     print("\n--- The search for rentals will be carried out on the Quinto Andar website, please answer the following questions: --- \n")
     value_type_int = loop_question("\nDo you want to search by:\n 0 - Total Price\n 1 - Rental Price \n Please use just numbers.\n\n", 0, len(VALUE_TYPE))
 
-    min_value_rent = loop_question("\nWhat is the minimum price you want? [Min value possible = 500]\n", 500, 20001)
-    max_value_rent = loop_question("\nWhat is the max price you want? [Max value possible = 20000]\n\n", min_value_rent, 20001)
+    min_value_rent = loop_question("\n--- What is the minimum price you want? [Min value possible = 500]\n", 500, 20001)
+    max_value_rent = loop_question("\n--- What is the max price you want? [Max value possible = 20000]\n\n", min_value_rent, 20001)
     
-    types_of_housing = loop_question_string(f"\nDo you want to filter by: {TYPE_OF_HOUSING}? \n\nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", TYPE_OF_HOUSING)
+    types_of_housing = loop_question_string(f"\n--- Do you want to filter by: {TYPE_OF_HOUSING}? \n\nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", TYPE_OF_HOUSING)
     
-    min_number_bedrooms = loop_question(f"\nHow many bedrooms do you want? {MIN_NUMBER_OF_BEDROOMS}?\n\n", 1, len(MIN_NUMBER_OF_BEDROOMS)+1) - 1
-    min_number_parking = loop_question(f"\nHow many parking spaces do you want? {MIN_NUMBER_OF_PARKING_SPACES}?\n\n", 0, len(MIN_NUMBER_OF_PARKING_SPACES))
-    min_number_bathrooms = loop_question(f"\nHow many bathrooms do you want? {MIN_NUMBER_OF_BATHROOMS}?\n\n", 1, len(MIN_NUMBER_OF_BATHROOMS)+1) - 1
+    min_number_bedrooms = loop_question(f"\n--- How many bedrooms do you want? {MIN_NUMBER_OF_BEDROOMS}?\n\n", 1, len(MIN_NUMBER_OF_BEDROOMS)+1) - 1
+    min_number_parking = loop_question(f"\n--- How many parking spaces do you want? {MIN_NUMBER_OF_PARKING_SPACES}?\n\n", 0, len(MIN_NUMBER_OF_PARKING_SPACES))
+    min_number_bathrooms = loop_question(f"\n--- How many bathrooms do you want? {MIN_NUMBER_OF_BATHROOMS}?\n\n", 1, len(MIN_NUMBER_OF_BATHROOMS)+1) - 1
     
-    min_area = loop_question("\nWhat is the minimum area you want? [Min value possible = 20]\n", 20, 1001)
-    max_area = loop_question("\nWhat is the max area you want? [Max value possible = 1000]\n", min_area, 1001)
+    min_area = loop_question("\n--- What is the minimum area you want? [Min value possible = 20]\n", 20, 1001)
+    max_area = loop_question("\n--- What is the max area you want? [Max value possible = 1000]\n", min_area, 1001)
     
-    furnished_type_int = loop_question(f"\nDo you want to be furnished? \n 0 - any \n 1 - yes \n 2 - no \n Please use just numbers.\n\n", 0, len(FURNISHED))
-    pet_type_int = loop_question(f"\nDo you want to be pet friendly? \n 0 - any \n 1 - yes \n 2 - no \n Please use just numbers.\n\n", 0, len(PETS))
-    near_subway_int = loop_question(f"\nDo you want to be near the subway? \n 0 - any \n 1 - yes \n 2 - no \n Please use just numbers.\n\n", 0, len(NEAR_SUBWAY))
-    availability_int = loop_question(f"\nDo you want to be available in? \n 0 - any \n 1 - immediate \n 2 - soon \n Please use just numbers.\n\n", 0, len(AVAILABILITY))
-    min_number_suites = loop_question(f"\nHow many suites do you want? {MIN_NUMBER_OF_SUITES}?\n\n", 0, len(MIN_NUMBER_OF_SUITES))
+    furnished_type_int = loop_question(f"\n--- Do you want to be furnished? \n 0 - any \n 1 - yes \n 2 - no \n Please use just numbers.\n\n", 0, len(FURNISHED))
+    pet_type_int = loop_question(f"\n--- Do you want to be pet friendly? \n 0 - any \n 1 - yes \n 2 - no \n Please use just numbers.\n\n", 0, len(PETS))
+    near_subway_int = loop_question(f"\n--- Do you want to be near the subway? \n 0 - any \n 1 - yes \n 2 - no \n Please use just numbers.\n\n", 0, len(NEAR_SUBWAY))
+    availability_int = loop_question(f"\n--- Do you want to be available in? \n 0 - any \n 1 - immediate \n 2 - soon \n Please use just numbers.\n\n", 0, len(AVAILABILITY))
+    min_number_suites = loop_question(f"\n--- How many suites do you want? {MIN_NUMBER_OF_SUITES}?\n\n", 0, len(MIN_NUMBER_OF_SUITES))
     
-    condominium_options = loop_question_string(f"\nDo you want to filter by: {CONDOMINIUM_OPTIONS}? \n\nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", CONDOMINIUM_OPTIONS)
-    convenience_options = loop_question_string(f"\nDo you want to filter by: {CONVENIENCE_OPTIONS}? \n\nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", CONVENIENCE_OPTIONS)
-    furniture_options = loop_question_string(f"\nDo you want to filter by: {FURNITURE_OPTIONS}? \n\nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", FURNITURE_OPTIONS)
-    wellbeing_options = loop_question_string(f"\nDo you want to filter by: {WEEL_BEING_OPTIONS}? \n\nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", WEEL_BEING_OPTIONS)
-    home_appliances_options = loop_question_string(f"\nDo you want to filter by: {HOME_APPLIANCES_OPTIONS}?\n\nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", HOME_APPLIANCES_OPTIONS)
-    rooms_options = loop_question_string(f"\nDo you want to filter by: {ROOMS_OPTIONS}? \nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", ROOMS_OPTIONS)
-    accessibility_options = loop_question_string(f"\nDo you want to filter by: {ACCESSIBILITY_OPTIONS}? \n\nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", ACCESSIBILITY_OPTIONS)
+    condominium_options = loop_question_string(f"\n--- Do you want to filter by: {CONDOMINIUM_OPTIONS}? \n\nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", CONDOMINIUM_OPTIONS)
+    convenience_options = loop_question_string(f"\n--- Do you want to filter by: {CONVENIENCE_OPTIONS}? \n\nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", CONVENIENCE_OPTIONS)
+    furniture_options = loop_question_string(f"\n--- Do you want to filter by: {FURNITURE_OPTIONS}? \n\nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", FURNITURE_OPTIONS)
+    wellbeing_options = loop_question_string(f"\n--- Do you want to filter by: {WEEL_BEING_OPTIONS}? \n\nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", WEEL_BEING_OPTIONS)
+    home_appliances_options = loop_question_string(f"\n--- Do you want to filter by: {HOME_APPLIANCES_OPTIONS}?\n\nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", HOME_APPLIANCES_OPTIONS)
+    rooms_options = loop_question_string(f"\n--- Do you want to filter by: {ROOMS_OPTIONS}? \nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", ROOMS_OPTIONS)
+    accessibility_options = loop_question_string(f"\n--- Do you want to filter by: {ACCESSIBILITY_OPTIONS}? \n\nIf you want all of them, digit: all, if you already added the options that you want or does not have preference, digit: ok. Please digit the same way as it is shown or else it wont work.\n\n", ACCESSIBILITY_OPTIONS)
 
     return value_type_int, min_value_rent, max_value_rent, types_of_housing, min_number_bedrooms, min_number_parking, min_number_bathrooms, min_area, max_area, furnished_type_int, pet_type_int, near_subway_int, availability_int, min_number_suites, condominium_options, convenience_options,furniture_options, wellbeing_options, home_appliances_options, rooms_options, accessibility_options
 
@@ -524,10 +525,12 @@ def main():
     #chrome_options.add_argument('--headless') # ensure GUI is off
     #chrome_options.add_argument('--no-sandbox')
     #chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument("--log-level=1")
+    
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     driver.set_page_load_timeout(160)
     driver.set_window_size(1600, 1200)
-
+    
     driver.get(URL)
     driver.implicitly_wait(2000)
 
@@ -550,11 +553,11 @@ def main():
         all_information = True
         data = extract_data(driver, all_information)
 
-        file_name = input("\n\n Under what name do you want the file to be saved?")
+        file_name = input("\n\n --- Under what name do you want the file to be saved?\n")
         write_to_excel(data, file_name + ".xlsx")
 
         print(f"\n\nFinished! The results are in the file {file_name}.xlsx\n\n")
-        time.sleep(20)
+        time.sleep(3)
     else:
         print("There was no result for this search!")
 
