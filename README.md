@@ -220,23 +220,23 @@ poetry install && poetry run main
 
 A análise feita permitiu explorar os dados de imóveis coletados via web scraping, com foco especial em características como preço, área, bairro e a aceitação de animais de estimação (pet friendly), o que a gente considerou mais importantes para procurar um apt como um usuário. O estudo começa com o tratamento dos dados, convertendo os valores de preço para formatos numéricos e extraindo o nome dos bairros a partir de uma string contendo o endereço completo.
 
-- **Dispersão entre Área e Preço Total**
+- **Dispersão entre Área e Preço Total**:
    Um gráfico de dispersão foi utilizado para visualizar a relação entre a área dos imóveis (em m²) e seu preço total. A correlação observada mostra que, em geral, imóveis maiores tendem a ter preços mais altos, mas existem variações significativas que podem indicar bairros mais caros ou imóveis com características diferenciadas, como mostra alguns pontos extremos.
    ![alt text](scrap-imoveis/img/dispersao.png)
 
-2. **Distribuição do Preço por Metro Quadrado (R\$/m²)**
+- **Distribuição do Preço por Metro Quadrado (R\$/m²)**:
    Um histograma revelou que a maior parte dos imóveis está concentrada em uma faixa de preço por metro quadrado mais acessível, com alguns outliers em regiões mais valorizadas. Esse tipo de análise foi considerada essencial para entender o custo-benefício dos imóveis.
    ![alt text](scrap-imoveis/img/preco-area.png)
 
-3. **Preço Médio por Bairro**
+- **Preço Médio por Bairro**:
    Foram destacados os 30 bairros com maior média de preços. Essa visualização permite identificar regiões mais valorizadas da cidade, ajudando tanto compradores quanto investidores a entenderem onde estão localizados os imóveis mais caros. Consideramos os 30 bairros para o gráfico não ficar tão poluido.
    ![alt text](scrap-imoveis/img/preco-bairro.png)
 
-4. **Distribuição por Número de Quartos**
+- **Distribuição por Número de Quartos**:
    Pensamos também na frequência de imóveis conforme o número de quartos. Isso permite entender o perfil da oferta no mercado, revelando, por exemplo, se há predominância de apartamentos compactos ou maiores, já que o filtro do Quinto Andar pega sempre pelo mínimo número de quartos, banheiros e etc.
    ![alt text](scrap-imoveis/img/qtd-quartos.png)
 
-5. **Impacto do Fator "Pet Friendly" no Preço**
+- **Impacto do Fator "Pet Friendly" no Preço**:
    Uma das perguntas que pensamos também foi se tinha alguma relação entre preços médios entre imóveis que aceitam e não aceitam animais de estimação. Apesar da pouca diferença em questao de preço, os resultados indicam levemente que característica de ser "pet friendly" está ligada a um valor médio maior, o que é útil tanto para quem procura imóveis com essa exigência quanto para proprietários que desejam valorizar seus anúncios, mas sem tanta diferença ainda para esse filtro em especifíco, podendo ser uma diferença maior em outros filtros.
    ![alt text](scrap-imoveis/img/aceita-pet.png)
 
